@@ -43,6 +43,9 @@
 #include "spawn.h"
 #include "log.h"
 #include "carp_p.h"
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #ifdef WITH_DMALLOC
 # include <dmalloc.h>
@@ -151,6 +154,35 @@ static void carp_hmac_generate(struct carp_softc *sc, u_int32_t counter[2],
     SHA1Final(md, &ctx);    
 }
 
+static void get_vaddr( u_int32_t *carp_vaddr)
+{
+    int fd;
+    char * myfifo = "/tmp/viptest";
+    unsigned char buf[4];
+
+    FILE *filepointer;
+    int character;
+    filepointer=fopen( myfifo, "r");
+    if (filepointer!=NULL)
+    {
+		int i=0;
+		while((character=fgetc(filepointer)) != EOF && i < 4) {
+			buf[i] = character;
+			i++;
+		}
+		fclose(filepointer);
+    }
+    else
+    {
+    	buf[0] = 0x00;
+    	buf[1] = 0x00;
+    	buf[2] = 0x00;
+    	buf[3] = 0x00;
+    }
+
+    memcpy(carp_vaddr, buf, 4);
+}
+
 static int carp_prepare_ad(struct carp_header *ch, struct carp_softc *sc)
 {
     if (sc->sc_init_counter != 0) {
@@ -214,6 +246,8 @@ static void carp_send_ad(struct carp_softc *sc)
     ch.carp_authlen = CARP_AUTHLEN;
     ch.carp_pad1 = 0;   /* must be zero */
     ch.carp_cksum = 0;
+
+    get_vaddr(&ch.carp_vaddr);
 
     ip_len = sizeof ip + sizeof ch;
     eth_len = ip_len + sizeof eh;
