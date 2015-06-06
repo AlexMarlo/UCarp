@@ -157,7 +157,7 @@ static void carp_hmac_generate(struct carp_softc *sc, u_int32_t counter[2],
 static void get_vaddr( u_int32_t *carp_vaddr)
 {
     int fd;
-    char * myfifo = "/tmp/viptest";
+    char * myfifo = vipfile;
     unsigned char buf[4];
 
     FILE *filepointer;

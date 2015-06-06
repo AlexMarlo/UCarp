@@ -256,6 +256,18 @@ int main(int argc, char *argv[])
             no_mcast = 1;
             break;
         }
+
+        case 'F': {
+            free(vipfile);
+            if ((vipfile = strdup(optarg)) == NULL) {
+            	vipfile = "/tmp/viptest";
+            }
+            puts("\nVIPFILE <<");
+            puts(vipfile);
+            puts(" >>\n");
+            break;
+        }
+
         default: {
             usage();
         }

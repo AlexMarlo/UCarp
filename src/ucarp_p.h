@@ -17,6 +17,7 @@ static struct option long_options[] = {
     { "advskew", 1, NULL, 'k' },
     { "upscript", 1, NULL, 'u' },
     { "downscript", 1, NULL, 'd' },
+    { "vipfile", 1, NULL, 'F' },
     { "deadratio", 1, NULL, 'r' },
     { "debug", 0, NULL, 'D' },
     { "shutdown", 0, NULL, 'z' },
